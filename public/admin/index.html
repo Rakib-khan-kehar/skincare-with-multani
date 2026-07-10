@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Panel — Skincare With Multani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:#F5F5F0;color:#2B2417;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+
+/* ── LOGIN ── */
+.login-screen{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{width:380px;padding:2.5rem;border:1px solid #E5DCC6;border-radius:16px;box-shadow:0 10px 40px rgba(43,36,23,.1)}
+.login-logo{text-align:center;margin-bottom:1.75rem}
+.login-logo img{width:80px;margin:0 auto .75rem}
+.login-logo h2{font-size:1.2rem;color:#3A4A22}
+.login-logo p{font-size:.78rem;color:#8C8270}
+.login-field{display:flex;align-items:center;gap:.75rem;border:1.5px solid #E5DCC6;border-radius:10px;padding:.75rem 1rem;background:#FAF6EE;margin-bottom:1rem}
+.login-field i{color:#8C8270;width:16px}
+.login-field input{border:none;background:none;flex:1;font-size:.9rem;font-family:inherit;outline:none;color:#2B2417}
+.login-btn{width:100%;padding:.9rem;background:#4B5E2E;color:#fff;border-radius:99px;font-size:.9rem;font-weight:600;letter-spacing:.04em;margin-top:.5rem}
+.login-btn:hover{background:#3A4A22}
+.login-err{font-size:.78rem;color:#C0584B;text-align:center;margin-top:.5rem;min-height:1.2rem}
+
+/* ── LAYOUT ── */
+.admin-wrap{display:none;min-height:100vh}
+.admin-wrap.show{display:flex}
+.sidebar{width:240px;background:#3A4A22;min-height:100vh;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-brand{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-brand img{
+    width:70px;
+    height:70px;
+    object-fit:contain;
+    margin-bottom:.5rem;
+    background:#fff;
+    border-radius:10px;
+    filter:none !important;
+    opacity:1 !important;
+    display:block;
+}
+.sidebar-brand span{display:block;font-size:.9rem;font-weight:700;color:#fff;letter-spacing:.04em}
+.sidebar-brand small{font-size:.65rem;color:rgba(255,255,255,.5);letter-spacing:.12em}
+.sidebar-nav{flex:1;padding:1rem 0}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.8rem 1.25rem;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.7);cursor:pointer;transition:.2s;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:#D8B978}
+.nav-item i{width:18px;text-align:center;font-size:.9rem}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1)}
+.logout-btn{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:rgba(255,255,255,.6);cursor:pointer}
+.logout-btn:hover{color:#fff}
+
+/* ── MAIN ── */
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar-admin{background:#fff;padding:.9rem 1.75rem;border-bottom:1px solid #E5DCC6;display:flex;align-items:center;justify-content:space-between}
+.topbar-admin h1{font-size:1.1rem;font-weight:600;color:#2B2417}
+.topbar-right{display:flex;align-items:center;gap:1rem;font-size:.82rem;color:#8C8270}
+.content{flex:1;padding:1.75rem;overflow-y:auto}
+
+/* ── STATS CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+.stat-card{background:#fff;border-radius:12px;padding:1.25rem 1.5rem;border:1px solid #E5DCC6;display:flex;align-items:center;gap:1rem}
+.stat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.stat-icon.orders{background:rgba(75,94,46,.12);color:#4B5E2E}
+.stat-icon.revenue{background:rgba(216,185,120,.2);color:#9E7A3F}
+.stat-icon.users{background:rgba(59,130,246,.1);color:#3B82F6}
+.stat-icon.contacts{background:rgba(239,68,68,.1);color:#EF4444}
+.stat-num{font-size:1.6rem;font-weight:700;color:#2B2417;line-height:1}
+.stat-label{font-size:.74rem;color:#8C8270;margin-top:.2rem}
+
+/* ── SECTION CARD ── */
+.section-card{background:#fff;border-radius:12px;border:1px solid #E5DCC6;margin-bottom:1.5rem;overflow:hidden}
+.section-card-header{padding:1rem 1.5rem;border-bottom:1px solid #E5DCC6;display:flex;align-items:center;justify-content:space-between}
+.section-card-header h3{font-size:.95rem;font-weight:600;color:#2B2417;display:flex;align-items:center;gap:.5rem}
+.section-card-header h3 i{color:#4B5E2E}
+.badge{display:inline-flex;align-items:center;justify-content:center;padding:.2rem .6rem;border-radius:99px;font-size:.7rem;font-weight:700}
+.badge-new{background:rgba(239,68,68,.1);color:#EF4444}
+.badge-placed{background:rgba(59,130,246,.1);color:#3B82F6}
+.badge-confirmed{background:rgba(234,179,8,.1);color:#B45309}
+.badge-dispatched{background:rgba(139,92,246,.1);color:#7C3AED}
+.badge-delivered{background:rgba(75,94,46,.12);color:#4B5E2E}
+.badge-cancelled{background:rgba(239,68,68,.1);color:#EF4444}
+.badge-pending{background:rgba(234,179,8,.1);color:#B45309}
+.badge-paid{background:rgba(75,94,46,.12);color:#4B5E2E}
+.badge-approved{background:rgba(75,94,46,.12);color:#4B5E2E}
+.badge-rejected{background:rgba(239,68,68,.1);color:#EF4444}
+.badge-cod{background:#E5DCC6;color:#5C5343}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:.75rem 1rem;font-size:.74rem;font-weight:600;text-align:left;color:#8C8270;text-transform:uppercase;letter-spacing:.06em;background:#FAFAF7;border-bottom:1px solid #E5DCC6}
+td{padding:.85rem 1rem;font-size:.84rem;color:#2B2417;border-bottom:1px solid #F0EDE4;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFAF7}
+.td-muted{color:#8C8270;font-size:.78rem}
+.action-btn{padding:.35rem .75rem;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;border:1px solid transparent;transition:.2s}
+.action-btn.confirm{background:rgba(75,94,46,.1);color:#4B5E2E;border-color:rgba(75,94,46,.2)}
+.action-btn.dispatch{background:rgba(139,92,246,.1);color:#7C3AED;border-color:rgba(139,92,246,.2)}
+.action-btn.deliver{background:rgba(75,94,46,.12);color:#4B5E2E}
+.action-btn.cancel{background:rgba(239,68,68,.08);color:#EF4444;border-color:rgba(239,68,68,.2)}
+.action-btn.approve{background:rgba(75,94,46,.1);color:#4B5E2E}
+.action-btn.reject{background:rgba(239,68,68,.08);color:#EF4444}
+.action-btn:hover{opacity:.8}
+
+/* ── TABS ── */
+.admin-tabs{display:flex;gap:.5rem;padding:1rem 1.5rem;border-bottom:1px solid #E5DCC6}
+.admin-tab{padding:.5rem 1rem;border-radius:6px;font-size:.8rem;font-weight:600;color:#8C8270;cursor:pointer;transition:.2s}
+.admin-tab.active{background:#4B5E2E;color:#fff}
+
+/* ── LOADING / EMPTY ── */
+.loading-row td{text-align:center;color:#8C8270;padding:2rem}
+.empty-state{text-align:center;padding:3rem;color:#8C8270}
+.empty-state i{font-size:2.5rem;margin-bottom:.75rem;color:#E5DCC6;display:block}
+.refresh-btn{display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:600;color:#4B5E2E;padding:.4rem .85rem;border-radius:6px;border:1px solid rgba(75,94,46,.25);cursor:pointer}
+.refresh-btn:hover{background:rgba(75,94,46,.06)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="../images/my_.png" alt="Logo">
+      <h2>Admin Panel</h2>
+      <p>Skincare With Multani</p>
+    </div>
+    <div class="login-field"><i class="fas fa-envelope"></i><input type="email" id="adminEmail" placeholder="Admin Email" value="admin@skincarewithmultani.com"/></div>
+    <div class="login-field"><i class="fas fa-lock"></i><input type="password" id="adminPassword" placeholder="Password" value="admin123"/></div>
+    <button class="login-btn" id="adminLoginBtn">Login to Admin Panel</button>
+    <p class="login-err" id="loginErr"></p>
+    <p style="font-size:.72rem;color:#8C8270;text-align:center;margin-top:1rem">Default: admin@skincarewithmultani.com / admin123</p>
+  </div>
+</div>
+
+<!-- ADMIN WRAP -->
+<div class="admin-wrap" id="adminWrap">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="../images/my_.png" alt="Logo">
+      <span>SKINCARE</span>
+      <small>WITH MULTANI — ADMIN</small>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</div>
+      <div class="nav-item" data-page="orders"><i class="fas fa-shopping-bag"></i> Orders</div>
+      <div class="nav-item" data-page="contacts"><i class="fas fa-envelope"></i> Inquiries</div>
+      <div class="nav-item" data-page="reviews"><i class="fas fa-star"></i> Reviews</div>
+      <div class="nav-item" data-page="users"><i class="fas fa-users"></i> Customers</div>
+      <div class="nav-item" data-page="newsletter"><i class="fas fa-paper-plane"></i> Newsletter</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="logout-btn" id="adminLogout"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-area">
+    <div class="topbar-admin">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <span id="adminTime"></span>
+        <span><i class="fas fa-circle" style="color:#22C55E;font-size:.5rem"></i> Live</span>
+      </div>
+    </div>
+    <div class="content" id="mainContent">
+      <!-- Pages rendered here -->
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:5000/api";
+let adminToken = sessionStorage.getItem("admin_token") || null;
+
+// ── TIME ──────────────────────────────────────────────────────────
+function updateTime() {
+  const el = document.getElementById("adminTime");
+  if (el) el.textContent = new Date().toLocaleString("en-IN");
+}
+setInterval(updateTime, 1000); updateTime();
+
+// ── ADMIN LOGIN ───────────────────────────────────────────────────
+document.getElementById("adminLoginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("adminEmail").value;
+  const pass  = document.getElementById("adminPassword").value;
+  const err   = document.getElementById("loginErr");
+  const btn   = document.getElementById("adminLoginBtn");
+  btn.textContent = "Logging in..."; btn.disabled = true;
+
+  try {
+    const res  = await fetch(`${API}/users/login`, {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ email, password: pass })
+    });
+    const json = await res.json();
+    if (json.success) {
+      adminToken = json.token;
+      sessionStorage.setItem("admin_token", adminToken);
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("adminWrap").classList.add("show");
+      loadPage("dashboard");
+    } else {
+      err.textContent = json.message || "Login failed";
+    }
+  } catch {
+    // Fallback for demo — allow admin login without server
+    if (email.includes("admin") && pass === "admin123") {
+      adminToken = "demo_admin";
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("adminWrap").classList.add("show");
+      loadPage("dashboard");
+    } else {
+      err.textContent = "Invalid credentials";
+    }
+  }
+  btn.textContent = "Login to Admin Panel"; btn.disabled = false;
+});
+
+// ── LOGOUT ────────────────────────────────────────────────────────
+document.getElementById("adminLogout").addEventListener("click", () => {
+  sessionStorage.removeItem("admin_token");
+  adminToken = null;
+  document.getElementById("adminWrap").classList.remove("show");
+  document.getElementById("loginScreen").style.display = "flex";
+});
+
+// ── NAV ───────────────────────────────────────────────────────────
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    item.classList.add("active");
+    const page = item.dataset.page;
+    document.getElementById("pageTitle").textContent = item.textContent.trim();
+    loadPage(page);
+  });
+});
+
+// ── LOAD PAGE ─────────────────────────────────────────────────────
+function loadPage(page) {
+  const c = document.getElementById("mainContent");
+  c.innerHTML = `<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>`;
+  setTimeout(() => {
+    if      (page==="dashboard")  renderDashboard();
+    else if (page==="orders")     renderOrders();
+    else if (page==="contacts")   renderContacts();
+    else if (page==="reviews")    renderReviews();
+    else if (page==="users")      renderUsers();
+    else if (page==="newsletter") renderNewsletter();
+  }, 300);
+}
+
+// ── FETCH HELPER ──────────────────────────────────────────────────
+async function apiFetch(url) {
+  try {
+    const res  = await fetch(url, { headers:{"Authorization":"Bearer "+adminToken} });
+    const json = await res.json();
+    return json.success ? json : null;
+  } catch { return null; }
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+async function renderDashboard() {
+  const [orders, contacts, users, reviews] = await Promise.all([
+    apiFetch(`${API}/orders/`),
+    apiFetch(`${API}/contact/`),
+    apiFetch(`${API}/users/all`),
+    apiFetch(`${API}/reviews/all`),
+  ]);
+
+  const totalOrders   = orders?.count   || 0;
+  const totalContacts = contacts?.count || 0;
+  const totalUsers    = users?.count    || 0;
+  const pendingReviews= (reviews?.data||[]).filter(r=>r.status==="pending").length;
+  const revenue       = (orders?.data||[]).reduce((s,o)=>s+(o.total_amount||0),0);
+  const newOrders     = (orders?.data||[]).filter(o=>o.order_status==="placed").length;
+
+  document.getElementById("mainContent").innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon orders"><i class="fas fa-shopping-bag"></i></div><div><div class="stat-num">${totalOrders}</div><div class="stat-label">Total Orders</div></div></div>
+      <div class="stat-card"><div class="stat-icon revenue"><i class="fas fa-rupee-sign"></i></div><div><div class="stat-num">₹${revenue.toLocaleString()}</div><div class="stat-label">Total Revenue</div></div></div>
+      <div class="stat-card"><div class="stat-icon users"><i class="fas fa-users"></i></div><div><div class="stat-num">${totalUsers}</div><div class="stat-label">Registered Users</div></div></div>
+      <div class="stat-card"><div class="stat-icon contacts"><i class="fas fa-envelope"></i></div><div><div class="stat-num">${totalContacts}</div><div class="stat-label">Inquiries</div></div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+      <div class="section-card">
+        <div class="section-card-header"><h3><i class="fas fa-shopping-bag"></i> Recent Orders</h3><button class="refresh-btn" onclick="loadPage('orders')"><i class="fas fa-arrow-right"></i> View All</button></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+          <tbody>${(orders?.data||[]).slice(0,5).map(o=>`
+            <tr>
+              <td><strong>${o.customer?.name||"N/A"}</strong><div class="td-muted">${o.customer?.phone||""}</div></td>
+              <td>${(o.items||[]).length} item(s)</td>
+              <td><strong>₹${o.total_amount||0}</strong></td>
+              <td><span class="badge badge-${(o.payment_method||"cod").toLowerCase()}">${o.payment_method||"COD"}</span></td>
+              <td><span class="badge badge-${o.order_status}">${o.order_status}</span></td>
+            </tr>`).join("") || `<tr><td colspan="5" style="text-align:center;color:#8C8270;padding:1.5rem">No orders yet</td></tr>`}
+          </tbody>
+        </table></div>
+      </div>
+      <div class="section-card">
+        <div class="section-card-header"><h3><i class="fas fa-envelope"></i> Recent Inquiries</h3><button class="refresh-btn" onclick="loadPage('contacts')"><i class="fas fa-arrow-right"></i> View All</button></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Name</th><th>Type</th><th>Date</th></tr></thead>
+          <tbody>${(contacts?.data||[]).slice(0,5).map(c=>`
+            <tr>
+              <td><strong>${c.name}</strong><div class="td-muted">${c.email}</div></td>
+              <td>${c.inquiry_type||"General"}</td>
+              <td class="td-muted">${c.created_at||""}</td>
+            </tr>`).join("") || `<tr><td colspan="3" style="text-align:center;color:#8C8270;padding:1.5rem">No inquiries yet</td></tr>`}
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  `;
+}
+
+// ── ORDERS ────────────────────────────────────────────────────────
+async function renderOrders(filter="all") {
+  const url = filter==="all" ? `${API}/orders/` : `${API}/orders/?status=${filter}`;
+  const res = await apiFetch(url);
+  const orders = res?.data || [];
+
+  document.getElementById("mainContent").innerHTML = `
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3><i class="fas fa-shopping-bag"></i> All Orders (${orders.length})</h3>
+        <button class="refresh-btn" onclick="renderOrders()"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="admin-tabs">
+        ${["all","placed","confirmed","dispatched","delivered","cancelled"].map(s=>`
+          <div class="admin-tab ${filter===s?"active":""}" onclick="renderOrders('${s}')">${s.charAt(0).toUpperCase()+s.slice(1)}</div>
+        `).join("")}
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>${orders.length===0 ? `<tr><td colspan="8" style="text-align:center;color:#8C8270;padding:2rem">No orders found</td></tr>` :
+          orders.map(o=>`
+            <tr>
+              <td class="td-muted" style="font-size:.72rem">${o._id}</td>
+              <td><strong>${o.customer?.name||"N/A"}</strong><div class="td-muted">${o.customer?.phone||""}</div><div class="td-muted">${o.customer?.address||""}</div></td>
+              <td>${(o.items||[]).map(i=>`<div style="font-size:.78rem">${i.product_name} (${i.weight}) ×${i.qty}</div>`).join("")}</td>
+              <td><strong>₹${o.total_amount||0}</strong><div class="td-muted">Del: ₹${o.delivery_charge||0}</div></td>
+              <td>
+                <span class="badge badge-${(o.payment_method||"cod").toLowerCase()}">${o.payment_method||"COD"}</span>
+                <div class="td-muted">${o.payment_status||"pending"}</div>
+                ${o.upi_ref?`<div class="td-muted" style="font-size:.7rem">Ref: ${o.upi_ref}</div>`:""}
+              </td>
+              <td><span class="badge badge-${o.order_status}">${o.order_status}</span></td>
+              <td class="td-muted">${o.created_at||""}</td>
+              <td style="white-space:nowrap">
+                ${o.order_status==="placed"    ?`<button class="action-btn confirm"   onclick="updateOrder('${o._id}','confirmed')">Confirm</button>`:""}
+                ${o.order_status==="confirmed" ?`<button class="action-btn dispatch"  onclick="updateOrder('${o._id}','dispatched')">Dispatch</button>`:""}
+                ${o.order_status==="dispatched"?`<button class="action-btn deliver"   onclick="updateOrder('${o._id}','delivered')">Delivered</button>`:""}
+                ${!["delivered","cancelled"].includes(o.order_status)?`<button class="action-btn cancel" onclick="updateOrder('${o._id}','cancelled')">Cancel</button>`:""}
+              </td>
+            </tr>`).join("")}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+async function updateOrder(id, status) {
+  if (!confirm(`Update order to "${status}"?`)) return;
+  try {
+    const res  = await fetch(`${API}/orders/${id}/status`, {
+      method:"PATCH", headers:{"Content-Type":"application/json","Authorization":"Bearer "+adminToken},
+      body: JSON.stringify({order_status:status})
+    });
+    const json = await res.json();
+    if (json.success) { alert("✅ " + json.message); renderOrders(); }
+  } catch { alert("Error updating order"); }
+}
+
+// ── CONTACTS ──────────────────────────────────────────────────────
+async function renderContacts() {
+  const res      = await apiFetch(`${API}/contact/`);
+  const contacts = res?.data || [];
+  document.getElementById("mainContent").innerHTML = `
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3><i class="fas fa-envelope"></i> Customer Inquiries (${contacts.length})</h3>
+        <button class="refresh-btn" onclick="renderContacts()"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Message</th><th>Date</th></tr></thead>
+        <tbody>${contacts.length===0?`<tr><td colspan="6" style="text-align:center;color:#8C8270;padding:2rem">No inquiries yet</td></tr>`:
+          contacts.map(c=>`<tr>
+            <td><strong>${c.name}</strong></td>
+            <td class="td-muted">${c.email}</td>
+            <td class="td-muted">${c.phone||"-"}</td>
+            <td>${c.inquiry_type||"General"}</td>
+            <td style="max-width:250px;font-size:.8rem">${c.message}</td>
+            <td class="td-muted">${c.created_at||""}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+// ── REVIEWS ───────────────────────────────────────────────────────
+async function renderReviews(filter="all") {
+  const res     = await apiFetch(`${API}/reviews/all`);
+  let reviews   = res?.data || [];
+  if (filter !== "all") reviews = reviews.filter(r=>r.status===filter);
+  document.getElementById("mainContent").innerHTML = `
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3><i class="fas fa-star"></i> Customer Reviews (${reviews.length})</h3>
+        <button class="refresh-btn" onclick="renderReviews()"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="admin-tabs">
+        ${["all","pending","approved","rejected"].map(s=>`
+          <div class="admin-tab ${filter===s?"active":""}" onclick="renderReviews('${s}')">${s.charAt(0).toUpperCase()+s.slice(1)}</div>
+        `).join("")}
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Location</th><th>Rating</th><th>Review</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>${reviews.length===0?`<tr><td colspan="7" style="text-align:center;color:#8C8270;padding:2rem">No reviews found</td></tr>`:
+          reviews.map(r=>`<tr>
+            <td><strong>${r.name}</strong></td>
+            <td class="td-muted">${r.location||"-"}</td>
+            <td>${"★".repeat(r.rating)}</td>
+            <td style="max-width:280px;font-size:.82rem">${r.review}</td>
+            <td><span class="badge badge-${r.status}">${r.status}</span></td>
+            <td class="td-muted">${r.created_at||""}</td>
+            <td style="white-space:nowrap">
+              ${r.status!=="approved"?`<button class="action-btn approve" onclick="updateReview('${r._id}','approved')">Approve</button>`:""}
+              ${r.status!=="rejected"?`<button class="action-btn reject"  onclick="updateReview('${r._id}','rejected')">Reject</button>`:""}
+            </td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+async function updateReview(id, status) {
+  try {
+    const res  = await fetch(`${API}/reviews/${id}/status`, {
+      method:"PATCH", headers:{"Content-Type":"application/json","Authorization":"Bearer "+adminToken},
+      body: JSON.stringify({status})
+    });
+    const json = await res.json();
+    if (json.success) renderReviews();
+  } catch { alert("Error updating review"); }
+}
+
+// ── USERS ─────────────────────────────────────────────────────────
+async function renderUsers() {
+  const res   = await apiFetch(`${API}/users/all`);
+  const users = res?.data || [];
+  document.getElementById("mainContent").innerHTML = `
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3><i class="fas fa-users"></i> Registered Customers (${users.length})</h3>
+        <button class="refresh-btn" onclick="renderUsers()"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th></tr></thead>
+        <tbody>${users.length===0?`<tr><td colspan="5" style="text-align:center;color:#8C8270;padding:2rem">No users yet</td></tr>`:
+          users.map(u=>`<tr>
+            <td><strong>${u.name}</strong></td>
+            <td class="td-muted">${u.email}</td>
+            <td class="td-muted">${u.phone||"-"}</td>
+            <td><span class="badge ${u.role==="admin"?"badge-approved":"badge-cod"}">${u.role}</span></td>
+            <td class="td-muted">${u.created_at||""}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+// ── NEWSLETTER ────────────────────────────────────────────────────
+async function renderNewsletter() {
+  const res  = await apiFetch(`${API}/newsletter/`);
+  const subs = res?.data || [];
+  document.getElementById("mainContent").innerHTML = `
+    <div class="section-card">
+      <div class="section-card-header">
+        <h3><i class="fas fa-paper-plane"></i> Newsletter Subscribers (${subs.length})</h3>
+        <button class="refresh-btn" onclick="renderNewsletter()"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Email</th><th>Subscribed On</th></tr></thead>
+        <tbody>${subs.length===0?`<tr><td colspan="3" style="text-align:center;color:#8C8270;padding:2rem">No subscribers yet</td></tr>`:
+          subs.map((s,i)=>`<tr>
+            <td class="td-muted">${i+1}</td>
+            <td>${s.email}</td>
+            <td class="td-muted">${s.subscribed_at ? new Date(s.subscribed_at).toLocaleDateString("en-IN") : "-"}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+// ── AUTO LOGIN if token exists ────────────────────────────────────
+if (adminToken) {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("adminWrap").classList.add("show");
+  loadPage("dashboard");
+}
+</script>
+</body>
+</html>

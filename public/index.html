@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Skincare With Multani — Premium 100% Natural Multani Mitti Powder & Stone Chunks. Chemical free. COD available. All India delivery."/>
+<title>Skincare With Multani — Premium Multani Mitti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══ LOGIN / REGISTER MODAL ═══ -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <button class="modal-close" id="authModalClose"><i class="fas fa-times"></i></button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin">Login</button>
+      <button class="modal-tab" id="tabRegister">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form active" id="loginForm">
+      <h3>Welcome Back!</h3>
+      <div class="auth-field"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email Address" required/></div>
+      <div class="auth-field"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required/></div>
+      <button type="submit" class="btn btn-primary btn-full">Login</button>
+      <p class="auth-switch">New here? <span onclick="switchTab('register')">Create account</span></p>
+      <p class="auth-msg" id="loginMsg"></p>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form" id="registerForm">
+      <h3>Create Account</h3>
+      <div class="auth-field"><i class="fas fa-user"></i><input type="text" id="regName" placeholder="Full Name" required/></div>
+      <div class="auth-field"><i class="fas fa-envelope"></i><input type="email" id="regEmail" placeholder="Email Address" required/></div>
+      <div class="auth-field"><i class="fas fa-phone"></i><input type="tel" id="regPhone" placeholder="Phone Number"/></div>
+      <div class="auth-field"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="Password (6+ chars)" required/></div>
+      <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+      <p class="auth-switch">Already registered? <span onclick="switchTab('login')">Login</span></p>
+      <p class="auth-msg" id="registerMsg"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ UPI PAYMENT MODAL ═══ -->
+<div class="modal-overlay" id="upiModal">
+  <div class="modal-box upi-modal-box">
+    <button class="modal-close" id="upiModalClose"><i class="fas fa-times"></i></button>
+    <h3><i class="fas fa-mobile-alt"></i> Pay via UPI</h3>
+    <div class="upi-qr-wrap">
+      <div class="upi-qr-box">
+        <div class="upi-qr-icon"><i class="fas fa-qrcode"></i></div>
+        <p class="upi-scan-text">Scan QR or use UPI ID below</p>
+      </div>
+    </div>
+    <div class="upi-id-box">
+      <span>UPI ID:</span>
+      <strong id="upiIdDisplay">8396012896-2@ibl</strong>
+      <button onclick="copyUPI()" class="upi-copy-btn"><i class="fas fa-copy"></i> Copy</button>
+    </div>
+    <div class="upi-amount-box">
+      <span>Amount to Pay:</span>
+      <strong id="upiAmount">₹0</strong>
+    </div>
+    <p class="upi-note"><i class="fas fa-info-circle"></i> After payment, enter UTR/Reference number below</p>
+    <div class="auth-field">
+      <i class="fas fa-receipt"></i>
+      <input type="text" id="upiRef" placeholder="Enter UTR / Transaction Reference No."/>
+    </div>
+    <button class="btn btn-primary btn-full" id="upiConfirmBtn">Confirm Payment</button>
+    <p class="upi-msg" id="upiMsg"></p>
+  </div>
+</div>
+
+<!-- ═══ ORDER MODAL ═══ -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-box">
+    <button class="modal-close" id="orderModalClose"><i class="fas fa-times"></i></button>
+    <h3><i class="fas fa-shopping-bag"></i> Complete Your Order</h3>
+    <div id="orderSummary" class="order-summary-box"></div>
+    <form id="orderForm">
+      <div class="auth-field"><i class="fas fa-user"></i><input type="text" id="orderName" placeholder="Your Name *" required/></div>
+      <div class="auth-field"><i class="fas fa-phone"></i><input type="tel" id="orderPhone" placeholder="Phone / WhatsApp *" required/></div>
+      <div class="auth-field"><i class="fas fa-envelope"></i><input type="email" id="orderEmail" placeholder="Email (optional)"/></div>
+      <div class="auth-field"><i class="fas fa-map-marker-alt"></i><input type="text" id="orderAddress" placeholder="Full Address *" required/></div>
+      <div class="form-row-2">
+        <div class="auth-field"><i class="fas fa-city"></i><input type="text" id="orderCity" placeholder="City"/></div>
+        <div class="auth-field"><i class="fas fa-mail-bulk"></i><input type="text" id="orderPincode" placeholder="Pincode"/></div>
+      </div>
+      <p class="pd-label" style="margin:.75rem 0 .5rem">Payment Method</p>
+      <div class="payment-options">
+        <label class="pay-opt active" id="payOptCOD">
+          <input type="radio" name="payment" value="COD" checked/>
+          <i class="fas fa-hand-holding-usd"></i> Cash on Delivery
+        </label>
+        <label class="pay-opt" id="payOptUPI">
+          <input type="radio" name="payment" value="UPI"/>
+          <i class="fas fa-mobile-alt"></i> UPI Payment
+        </label>
+        <label class="pay-opt" id="payOptWA">
+          <input type="radio" name="payment" value="WhatsApp"/>
+          <i class="fab fa-whatsapp"></i> Order on WhatsApp
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full btn-large" id="placeOrderBtn">
+        <i class="fas fa-check-circle"></i> Place Order
+      </button>
+      <p class="order-msg" id="orderMsg"></p>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <span><i class="fas fa-leaf"></i> 100% Natural</span>
+      <span><i class="fas fa-flask"></i> Chemical Free</span>
+      <span><i class="fas fa-star"></i> Premium Quality</span>
+    </div>
+    <div class="topbar-right">
+      <span><i class="fas fa-truck"></i> Free Delivery ₹499+ &nbsp;|&nbsp; COD Available &nbsp;|&nbsp; All India</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="brand">
+      <img src="images/my_.png" alt="Skincare With Multani" class="brand-mark"/>
+      <span class="brand-text">
+        <span class="brand-name">SKINCARE</span>
+        <span class="brand-sub">WITH MULTANI</span>
+      </span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#products">Products</a>
+      <a href="#benefits">Benefits</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+      <button class="icon-btn cart-btn" id="cartBtn">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <!-- Auth buttons -->
+      <div class="nav-auth" id="navAuth">
+        <button class="btn btn-outline-sm" id="loginNavBtn"><i class="fas fa-user"></i> Login</button>
+      </div>
+      <div class="nav-user" id="navUser" style="display:none">
+        <span class="nav-username" id="navUsername"></span>
+        <button class="btn btn-outline-sm" id="logoutNavBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+      <a href="https://wa.me/919253412896" target="_blank" class="btn btn-primary btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search products..." id="searchInput"/>
+    <button id="searchClose"><i class="fas fa-times"></i></button>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3><i class="fas fa-shopping-bag"></i> Your Cart</h3>
+    <button id="cartClose"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-drawer-body" id="cartItems">
+    <p class="cart-empty">Your cart is empty.</p>
+  </div>
+  <div class="cart-drawer-footer">
+    <div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+    <div class="cart-total-row cart-delivery-row"><span>Delivery</span><span id="cartDelivery">₹0</span></div>
+    <div class="cart-total-row cart-grand-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="btn btn-primary btn-full" id="checkoutBtn"><i class="fas fa-check-circle"></i> Checkout</button>
+    <p class="cart-cod-note"><i class="fas fa-hand-holding-usd"></i> COD Available &nbsp;|&nbsp; Free delivery ₹499+</p>
+  </div>
+</div>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="hero-text" data-aos>
+      <p class="hero-eyebrow">Pure Earth. Pure Care. Pure You.</p>
+      <h1 class="hero-title">Premium<br/>Multani Mitti<br/><em>Powder</em></h1>
+      <p class="hero-desc">100% natural, chemical-free Multani Mitti for healthy glowing skin. COD available. All India delivery.</p>
+      <div class="hero-ctas">
+        <a href="#products" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+        <a href="https://wa.me/919253412896?text=Hi!%20I%20want%20to%20order." target="_blank" class="btn btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp Order</a>
+      </div>
+      <div class="hero-tags">
+        <div class="hero-tag"><i class="fas fa-seedling"></i><span>100% Natural</span></div>
+        <div class="hero-tag"><i class="fas fa-flask"></i><span>Chemical Free</span></div>
+        <div class="hero-tag"><i class="fas fa-certificate"></i><span>All Skin Types</span></div>
+        <div class="hero-tag"><i class="fas fa-truck"></i><span>COD Available</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" data-aos>
+      <div class="hero-img-wrap">
+        <img src="images/products/pouch-project(3).jpeg" alt="Premium Multani Mitti Powder Pouch" class="hero-product-img"/>
+        <div class="hero-img-badge">100%<br/>NATURAL</div>
+        <div class="float-chip fc-whatsapp"><i class="fab fa-whatsapp"></i></div>
+        <div class="float-chip fc-star"><i class="fas fa-star"></i></div>
+        <div class="float-chip fc-leaf"><i class="fas fa-leaf"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="section why-us" id="about">
+  <div class="container">
+    <div class="section-head" data-aos>
+      <p class="eyebrow"><i class="fas fa-seedling"></i> Why Choose Us</p>
+      <h2>Pure. Natural. Trusted.</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card" data-aos data-delay="0"><div class="why-icon"><i class="fas fa-leaf"></i></div><h3>100% Natural</h3><p>Pure Multani Mitti from natural source.</p></div>
+      <div class="why-card" data-aos data-delay="60"><div class="why-icon"><i class="fas fa-mortar-pestle"></i></div><h3>Ultra Fine Powder</h3><p>Finely ground for better skin care.</p></div>
+      <div class="why-card" data-aos data-delay="120"><div class="why-icon"><i class="fas fa-flask"></i></div><h3>Chemical Free</h3><p>No additives, no chemicals.</p></div>
+      <div class="why-card" data-aos data-delay="180"><div class="why-icon"><i class="fas fa-award"></i></div><h3>Premium Quality</h3><p>Carefully sourced &amp; quality tested.</p></div>
+      <div class="why-card" data-aos data-delay="240"><div class="why-icon"><i class="fas fa-box"></i></div><h3>Hygienic Packing</h3><p>Packed with care to retain purity.</p></div>
+      <div class="why-card" data-aos data-delay="300"><div class="why-icon"><i class="fas fa-truck"></i></div><h3>All India Delivery</h3><p>Fast &amp; safe. COD available.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRODUCTS ═══ -->
+<section class="section product-detail" id="products">
+  <div class="container">
+    <div class="section-head" data-aos>
+      <p class="eyebrow center"><i class="fas fa-box-open"></i> Our Products</p>
+      <h2>Choose Your Product</h2>
+    </div>
+
+    <!-- Product Tabs -->
+    <div class="product-type-tabs" data-aos>
+      <button class="ptype-tab active" data-type="powder">
+        <i class="fas fa-mortar-pestle"></i> Multani Mitti Powder
+      </button>
+      <button class="ptype-tab" data-type="chunk">
+        <i class="fas fa-gem"></i> Multani Stone Chunk
+      </button>
+    </div>
+
+    <!-- POWDER PRODUCT -->
+    <div class="product-panel active" id="panel-powder">
+      <div class="product-detail-grid">
+        <div class="pd-gallery" data-aos>
+          <div class="pd-thumbs">
+            <button class="pd-thumb active"
+            data-img="images/products/pouch-project(3).jpeg">
+           <img src="images/products/pouch-project(3).jpeg">
+           </button>
+            <button class="pd-thumb" data-img="images/gallery/bowl-with-stone.jpg"><img src="images/gallery/bowl-with-stone.jpg" alt="Bowl"/></button>
+            <button class="pd-thumb" data-img="images/gallery/powder-bowl-wood.jpg"><img src="images/gallery/powder-bowl-wood.jpg" alt="Powder"/></button>
+            <button class="pd-thumb" data-img="images/gallery/powder-scoop-bowl.jpg"><img src="images/gallery/powder-scoop-bowl.jpg" alt="Scoop"/></button>
+          </div>
+          <div class="pd-main-image">
+            <img src="images/products/pouch-project(3).jpeg" id="pdMainImg" alt="Premium Multani Mitti Powder"/>
+            <span class="pd-badge">100%<br/>NATURAL</span>
+          </div>
+        </div>
+        <div class="pd-info" data-aos>
+          <p class="pd-eyebrow">Premium Product</p>
+          <h2 class="pd-title">Premium Multani Mitti Powder</h2>
+          <p class="pd-meta">100% Natural &nbsp;|&nbsp; Chemical Free &nbsp;|&nbsp; For All Skin Types</p>
+          <div class="pd-price-row">
+            <span class="pd-price" id="pdPrice">₹179</span>
+            <span class="pd-price-old" id="pdPriceOld" style="display:none"></span>
+            <span class="pd-discount" id="pdDiscount" style="display:none"></span>
+          </div>
+          <div class="pd-block">
+            <p class="pd-label">Select Weight</p>
+            <div class="weight-options" id="weightOptions">
+              <button class="weight-opt" data-weight="250g" data-price="99" data-old="149" data-discount="34" data-img="images/products/product-pouch.jpg">250g<br/><span>₹99</span></button>
+              <button class="weight-opt active" data-weight="500g" data-price="179" data-img="images/products/product-pouch.jpg">500g<br/><span>₹179</span></button>
+              <button class="weight-opt" data-weight="1kg" data-price="299" data-img="images/products/product-pouch.jpg">1kg<br/><span>₹299</span></button>
+            </div>
+            <p class="weight-note"><i class="fas fa-info-circle"></i> 5kg &amp; 25kg bulk — <a href="#contact">contact us</a></p>
+          </div>
+          <div class="pd-block">
+            <p class="pd-label">Quantity</p>
+            <div class="qty-selector">
+              <button id="qtyMinus">−</button>
+              <span id="qtyValue">1</span>
+              <button id="qtyPlus">+</button>
+            </div>
+          </div>
+          <div class="pd-actions">
+            <button class="btn btn-primary btn-large" id="addToCartBtn"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+            <button class="btn btn-outline btn-large" id="buyNowBtn"><i class="fas fa-bolt"></i> Buy Now</button>
+          </div>
+          <div class="pd-trust">
+            <span><i class="fas fa-hand-holding-usd"></i> COD Available</span>
+            <span><i class="fas fa-truck"></i> Free delivery ₹499+</span>
+            <span><i class="fas fa-rotate-left"></i> Easy Returns</span>
+            <span><i class="fas fa-map-marker-alt"></i> All India</span>
+          </div>
+          <div class="pd-tabs">
+            <button class="pdt-btn active" data-pdt="desc">Description</button>
+            <button class="pdt-btn" data-pdt="benefits">Benefits</button>
+            <button class="pdt-btn" data-pdt="specs">Specifications</button>
+            <button class="pdt-btn" data-pdt="packaging">Packaging</button>
+          </div>
+          <div class="pdt-content active" id="pdt-desc"><p>Our Premium Multani Mitti Powder is sourced directly from mineral-rich earth and triple-sifted to an ultra-fine, lump-free texture. Free from any chemicals or additives, gentle for all skin types.</p></div>
+          <div class="pdt-content" id="pdt-benefits"><ul class="pdt-list"><li><i class="fas fa-check"></i> Deep cleanses pores and removes impurities</li><li><i class="fas fa-check"></i> Controls excess oil and shine</li><li><i class="fas fa-check"></i> Brightens dull, tired skin</li><li><i class="fas fa-check"></i> Reduces acne and blemishes</li><li><i class="fas fa-check"></i> Strengthens hair when used as a hair pack</li></ul></div>
+          <div class="pdt-content" id="pdt-specs"><table class="pdt-table"><tr><td>Form</td><td>Fine Powder</td></tr><tr><td>Mesh Size</td><td>200 Mesh</td></tr><tr><td>Shelf Life</td><td>24 Months</td></tr><tr><td>Origin</td><td>Rajasthan, India</td></tr><tr><td>Skin Type</td><td>All Skin Types</td></tr></table></div>
+          <div class="pdt-content" id="pdt-packaging"><p>Available in resealable stand-up pouches (250g, 500g, 1kg) with food-grade zip-lock. For 5kg &amp; 25kg bulk orders, <a href="#contact">contact us</a>.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHUNK PRODUCT -->
+    <div class="product-panel" id="panel-chunk">
+      <div class="product-detail-grid">
+        <div class="pd-gallery" data-aos>
+          <div class="pd-thumbs">
+            <button class="pd-thumb active" data-img="images/gallery/stone-raw.jpg"><img src="images/gallery/stone-raw.jpg" alt="Stone Raw"/></button>
+            <button class="pd-thumb" data-img="images/gallery/stone-closeup.jpg"><img src="images/gallery/stone-closeup.jpg" alt="Stone Closeup"/></button>
+            <button class="pd-thumb" data-img="images/gallery/stone-bag.jpg"><img src="images/gallery/stone-bag.jpg" alt="Stone Bag"/></button>
+          </div>
+          <div class="pd-main-image">
+            <img src="images/gallery/stone-raw.jpg" id="chunkMainImg" alt="Natural Multani Mitti Stone Chunk"/>
+            <span class="pd-badge">RAW &amp;<br/>PURE</span>
+          </div>
+        </div>
+        <div class="pd-info" data-aos>
+          <p class="pd-eyebrow">Natural Product</p>
+          <h2 class="pd-title">Natural Multani Mitti Stone Chunk</h2>
+          <p class="pd-meta">Raw | Unprocessed | Traditional Ayurvedic Form</p>
+          <div class="pd-price-row">
+            <span class="pd-price">₹149</span>
+            <span class="pd-discount" style="display:inline">Per 1kg</span>
+          </div>
+          <div class="pd-block">
+            <p class="pd-label">Available Size</p>
+            <div class="weight-options">
+              <button class="weight-opt active" data-weight="1kg" data-price="149">1kg<br/><span>₹149</span></button>
+            </div>
+            <p class="weight-note"><i class="fas fa-info-circle"></i> Bulk orders (50kg+) — <a href="#contact">contact us</a></p>
+          </div>
+          <div class="pd-block">
+            <p class="pd-label">Quantity</p>
+            <div class="qty-selector">
+              <button id="chunkQtyMinus">−</button>
+              <span id="chunkQtyValue">1</span>
+              <button id="chunkQtyPlus">+</button>
+            </div>
+          </div>
+          <div class="pd-actions">
+            <button class="btn btn-primary btn-large" id="addChunkToCartBtn"><i class="fas fa-shopping-bag"></i> Add to Cart</button>
+            <button class="btn btn-outline btn-large" id="buyChunkNowBtn"><i class="fas fa-bolt"></i> Buy Now</button>
+          </div>
+          <div class="pd-trust">
+            <span><i class="fas fa-hand-holding-usd"></i> COD Available</span>
+            <span><i class="fas fa-truck"></i> Free delivery ₹499+</span>
+            <span><i class="fas fa-leaf"></i> 100% Natural</span>
+            <span><i class="fas fa-map-marker-alt"></i> All India</span>
+          </div>
+          <div class="pd-tabs">
+            <button class="pdt-btn active" data-pdt="chunk-desc">Description</button>
+            <button class="pdt-btn" data-pdt="chunk-benefits">Benefits</button>
+            <button class="pdt-btn" data-pdt="chunk-specs">Specifications</button>
+          </div>
+          <div class="pdt-content active" id="pdt-chunk-desc"><p>Raw, unprocessed Multani Mitti stone chunks in their purest natural form. Traditionally used in Ayurvedic beauty rituals across generations. Each piece is unique, mined responsibly from Rajasthan.</p></div>
+          <div class="pdt-content" id="pdt-chunk-benefits"><ul class="pdt-list"><li><i class="fas fa-check"></i> 100% unprocessed and natural</li><li><i class="fas fa-check"></i> Traditional Ayurvedic grade</li><li><i class="fas fa-check"></i> Ideal for grinding into custom formulations</li><li><i class="fas fa-check"></i> Ethically mined from Rajasthan</li><li><i class="fas fa-check"></i> Rich in natural minerals</li></ul></div>
+          <div class="pdt-content" id="pdt-chunk-specs"><table class="pdt-table"><tr><td>Form</td><td>Raw Stone Chunks</td></tr><tr><td>Shelf Life</td><td>36 Months</td></tr><tr><td>Origin</td><td>Rajasthan, India</td></tr><tr><td>Usage</td><td>All Skin Types</td></tr></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="section benefits-strip" id="benefits">
+  <div class="container">
+    <div class="section-head" data-aos><p class="eyebrow center"><i class="fas fa-spa"></i> Benefits of Multani Mitti</p></div>
+    <div class="benefits-row">
+      <div class="benefit-item" data-aos data-delay="0"><div class="bi-icon"><i class="fas fa-water"></i></div><h4>Deep Cleansing</h4><p>Removes dirt, oil &amp; impurities.</p></div>
+      <div class="benefit-item" data-aos data-delay="60"><div class="bi-icon"><i class="fas fa-tint-slash"></i></div><h4>Oil Control</h4><p>Controls excess oil &amp; prevents acne.</p></div>
+      <div class="benefit-item" data-aos data-delay="120"><div class="bi-icon"><i class="fas fa-sun"></i></div><h4>Brightens Skin</h4><p>Helps improve skin tone.</p></div>
+      <div class="benefit-item" data-aos data-delay="180"><div class="bi-icon"><i class="fas fa-hand-dots"></i></div><h4>Acne Care</h4><p>Reduces acne, pimples &amp; blemishes.</p></div>
+      <div class="benefit-item" data-aos data-delay="240"><div class="bi-icon"><i class="fas fa-cut"></i></div><h4>Hair Care</h4><p>Strengthens hair &amp; reduces dandruff.</p></div>
+      <div class="benefit-item" data-aos data-delay="300"><div class="bi-icon"><i class="fas fa-gem"></i></div><h4>Natural Minerals</h4><p>Rich in minerals that nourish skin.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="section gallery-section" id="gallery">
+  <div class="container">
+    <div class="section-head" data-aos><p class="eyebrow center"><i class="fas fa-images"></i> Gallery</p><h2>Pure. Natural. Real.</h2></div>
+    <div class="gallery-filters" data-aos>
+      <button class="gf-btn active" data-filter="all">All</button>
+      <button class="gf-btn" data-filter="powder">Powder</button>
+      <button class="gf-btn" data-filter="stone">Stone</button>
+      <button class="gf-btn" data-filter="packing">Packing</button>
+    </div>
+    <div class="gallery-track-wrap" data-aos>
+      <button class="gallery-nav" id="galPrev"><i class="fas fa-chevron-left"></i></button>
+      <div class="gallery-track" id="galleryTrack">
+        <div class="gal-item" data-cat="packing"><img src="images/products/pouch-project(3).jpeg" alt="Premium Pouch"/><div class="gal-caption">Premium Packaging</div></div>
+        <div class="gal-item" data-cat="powder"><img src="images/gallery/bowl-with-stone.jpg" alt="Bowl with Stone"/><div class="gal-caption">Powder with Stone</div></div>
+        <div class="gal-item" data-cat="powder"><img src="images/gallery/powder-bowl-wood.jpg" alt="Powder Bowl"/><div class="gal-caption">Fine Ground Powder</div></div>
+        <div class="gal-item" data-cat="powder"><img src="images/gallery/powder-table.jpg" alt="Powder Table"/><div class="gal-caption">Pure Powder</div></div>
+        <div class="gal-item" data-cat="powder"><img src="images/gallery/powder-scoop-bowl.jpg" alt="Scoop Bowl"/><div class="gal-caption">Ultra Fine Powder</div></div>
+        <div class="gal-item" data-cat="stone"><img src="images/gallery/stone-bag.jpg" alt="Stone Bag"/><div class="gal-caption">Raw Stone Bulk</div></div>
+        <div class="gal-item" data-cat="stone"><img src="images/gallery/stone-closeup.jpg" alt="Stone Closeup"/><div class="gal-caption">Stone Close-Up</div></div>
+        <div class="gal-item" data-cat="stone"><img src="images/gallery/stone-raw.jpg" alt="Raw Stone"/><div class="gal-caption">Natural Raw Stones</div></div>
+        <div class="gal-item" data-cat="powder"><img src="images/gallery/powder-mortar.jpg" alt="Mortar"/><div class="gal-caption">Traditional Prep</div></div>
+      </div>
+      <button class="gallery-nav" id="galNext"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section testimonials-section" id="reviews">
+  <div class="container">
+    <div class="section-head" data-aos><p class="eyebrow center"><i class="fas fa-comment-dots"></i> Customer Reviews</p><h2>Real People, Real Results.</h2></div>
+    <div class="review-form-wrap" data-aos>
+      <h3><i class="fas fa-pen"></i> Share Your Experience</h3>
+      <form class="review-form" id="reviewForm">
+        <div class="review-form-row">
+          <input type="text" id="reviewName" placeholder="Your Name *" required/>
+          <input type="text" id="reviewLocation" placeholder="Your City (optional)"/>
+        </div>
+        <div class="star-select">
+          <p>Rating:</p>
+          <div class="stars-input" id="starsInput">
+            <i class="fas fa-star active" data-val="1"></i><i class="fas fa-star active" data-val="2"></i>
+            <i class="fas fa-star active" data-val="3"></i><i class="fas fa-star active" data-val="4"></i>
+            <i class="fas fa-star active" data-val="5"></i>
+          </div>
+        </div>
+        <textarea id="reviewText" rows="3" placeholder="Write your review *" required></textarea>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+        <p class="review-note"><i class="fas fa-info-circle"></i> Reviews published after approval.</p>
+      </form>
+    </div>
+    <div class="testimonial-carousel" data-aos>
+      <button class="t-nav t-prev" id="tPrev"><i class="fas fa-chevron-left"></i></button>
+      <div class="t-track" id="tTrack">
+        <div class="t-card"><p style="text-align:center;color:var(--text-muted);padding:2rem 0"><i class="fas fa-comment-dots" style="font-size:2rem;display:block;margin-bottom:.75rem;color:var(--olive-light)"></i>Be the first to share your experience!</p></div>
+      </div>
+      <button class="t-nav t-next" id="tNext"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="t-dots" id="tDots"></div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-banner-inner" data-aos>
+      <div class="cta-visual"><img src="images/gallery/bowl-with-stone.jpg" alt="Multani Mitti" class="cta-img"/></div>
+      <div class="cta-text"><h2>Glow Naturally<br/>with Skincare With Multani</h2></div>
+      <div class="cta-tags">
+        <div class="cta-tag"><i class="fas fa-leaf"></i><span>100% Natural</span></div>
+        <div class="cta-tag"><i class="fas fa-award"></i><span>Premium Quality</span></div>
+        <div class="cta-tag"><i class="fas fa-truck"></i><span>All India Delivery</span></div>
+      </div>
+      <a href="https://wa.me/919253412896?text=Hi!%20I%20want%20to%20order." target="_blank" class="btn btn-light"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="container">
+    <div class="section-head" data-aos><p class="eyebrow center"><i class="fas fa-circle-question"></i> FAQ</p><h2>Frequently Asked Questions</h2></div>
+    <div class="faq-list" id="faqList" data-aos>
+      <div class="faq-item"><button class="faq-q">What is the shipping time? <i class="fas fa-plus"></i></button><div class="faq-a"><p>Delhi NCR: 1–3 days | Other cities: 3–7 days | Remote: 5–10 days. Processing within 1–2 business days.</p></div></div>
+      <div class="faq-item"><button class="faq-q">Is COD available? <i class="fas fa-plus"></i></button><div class="faq-a"><p>Yes! Cash on Delivery available across India. You can also order on WhatsApp.</p></div></div>
+      <div class="faq-item"><button class="faq-q">What are the delivery charges? <i class="fas fa-plus"></i></button><div class="faq-a"><p>Free delivery on orders above ₹499. Below ₹499, charges calculated at order time based on location.</p></div></div>
+      <div class="faq-item"><button class="faq-q">Do you offer wholesale or bulk pricing? <i class="fas fa-plus"></i></button><div class="faq-a"><p>Yes! Minimum wholesale order is 50kg. WhatsApp us (+91 92534 12896) for bulk pricing.</p></div></div>
+      <div class="faq-item"><button class="faq-q">What is your return policy? <i class="fas fa-plus"></i></button><div class="faq-a"><p>Returns accepted within 48 hours for damaged/wrong/tampered products. Refunds in 5–7 business days.</p></div></div>
+      <div class="faq-item"><button class="faq-q">How to use Multani Mitti powder? <i class="fas fa-plus"></i></button><div class="faq-a"><p>Mix 2 tbsp with rose water, apply on face, leave 10–15 mins, rinse with lukewarm water.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-section" id="contact">
+  <div class="container">
+    <div class="section-head" data-aos><p class="eyebrow center"><i class="fas fa-envelope"></i> Get In Touch</p><h2>We'd Love To Hear From You</h2></div>
+    <div class="contact-grid">
+      <form class="contact-form" id="contactForm" data-aos>
+        <div class="form-row"><input type="text" name="name" placeholder="Your Name *" required/><input type="email" name="email" placeholder="Your Email *" required/></div>
+        <div class="form-row"><input type="tel" name="phone" placeholder="Phone / WhatsApp"/><select name="inquiryType"><option value="">Inquiry Type</option><option>Retail Purchase</option><option>Wholesale / Bulk (50kg+)</option><option>Other</option></select></div>
+        <textarea name="message" rows="5" placeholder="Your Message *" required></textarea>
+        <button type="submit" class="btn btn-primary btn-large btn-full">Send Message</button>
+        <p class="form-note"><i class="fas fa-lock"></i> Your information is safe with us.</p>
+      </form>
+      <div class="contact-aside" data-aos>
+        <div class="contact-card"><i class="fas fa-phone"></i><div><strong>Call Us</strong><span>+91 92534 12896</span></div></div>
+        <div class="contact-card"><i class="fab fa-whatsapp"></i><div><strong>WhatsApp</strong><a href="https://wa.me/919253412896" target="_blank">+91 92534 12896</a></div></div>
+        <div class="contact-card"><i class="fas fa-envelope"></i><div><strong>Email</strong><a href="mailto:official.skincarewithmultani@gmail.com">official.skincarewithmultani@gmail.com</a></div></div>
+        <div class="contact-card"><i class="fas fa-location-dot"></i><div><strong>Address</strong><span>New Delhi, India</span></div></div>
+        <div class="contact-card"><i class="fas fa-clock"></i><div><strong>Hours</strong><span>Mon–Sat: 9:00 AM – 10:00 PM</span></div></div>
+        <div class="social-row">
+          <a href="https://www.instagram.com/skincare_with_multani?igsh=OW15eDdrZmpudDUx" target="_blank" class="social-btn instagram"><i class="fab fa-instagram"></i> Instagram</a>
+          <a href="https://wa.me/919253412896" target="_blank" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POLICIES -->
+<section class="section policies-section" id="policies">
+  <div class="container">
+    <div class="section-head" data-aos><p class="eyebrow center"><i class="fas fa-file-lines"></i> Our Policies</p></div>
+    <div class="policies-tabs" data-aos>
+      <button class="policy-tab active" data-policy="shipping">Shipping</button>
+      <button class="policy-tab" data-policy="returns">Return &amp; Refund</button>
+      <button class="policy-tab" data-policy="privacy">Privacy</button>
+      <button class="policy-tab" data-policy="terms">Terms</button>
+    </div>
+    <div class="policy-content active" id="policy-shipping" data-aos>
+      <h3>Shipping Policy <span>Last Updated: July 2026</span></h3>
+      <h4>Order Processing</h4><ul><li>Orders processed within 1–2 business days.</li><li>Sunday/holiday orders processed next working day.</li></ul>
+      <h4>Shipping Time</h4><ul><li>Delhi NCR: 1–3 business days</li><li>Other cities: 3–7 business days</li><li>Remote locations: 5–10 business days</li></ul>
+      <h4>Charges</h4><ul><li>Free shipping on orders above ₹499.</li><li>Below ₹499: charges calculated at checkout.</li></ul>
+      <h4>Tracking</h4><p>Tracking ID sent via WhatsApp/SMS/Email after dispatch.</p>
+    </div>
+    <div class="policy-content" id="policy-returns">
+      <h3>Return &amp; Refund Policy <span>Last Updated: July 2026</span></h3>
+      <h4>Returns Accepted For</h4><ul><li>Damaged product</li><li>Wrong product</li><li>Tampered package</li></ul>
+      <p>Contact within <strong>48 hours</strong> with photos and order details.</p>
+      <h4>Non-Returnable</h4><ul><li>Opened/used products</li><li>Products damaged after delivery</li></ul>
+      <h4>Refunds</h4><p>Processed within 5–7 business days to original payment method.</p>
+    </div>
+    <div class="policy-content" id="policy-privacy">
+      <h3>Privacy Policy <span>Last Updated: July 2026</span></h3>
+      <h4>We Collect</h4><ul><li>Name, Phone, Email, Address</li><li>Payment info (processed securely)</li></ul>
+      <h4>We Use It To</h4><ul><li>Process orders, deliver products, provide support</li></ul>
+      <h4>Security</h4><p>We implement appropriate security measures to protect your data.</p>
+    </div>
+    <div class="policy-content" id="policy-terms">
+      <h3>Terms &amp; Conditions <span>Last Updated: July 2026</span></h3>
+      <p>By using our website, you agree to these terms.</p>
+      <h4>Pricing</h4><p>All prices in ₹ (INR) and may change without notice.</p>
+      <h4>Orders</h4><p>We reserve the right to cancel orders due to stock issues or pricing errors.</p>
+      <h4>Intellectual Property</h4><p>All content belongs to Skincare With Multani. May not be reused without permission.</p>
+      <h4>Governing Law</h4><p>Governed by laws of India.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <!-- FOOTER LOGO FIX — full logo image -->
+        <div class="footer-logo-wrap">
+          <img src="images/my_.png" alt="Skincare With Multani" class="footer-logo-img">
+        </div>
+        <p>Pure Earth. Pure Care. Pure You. Premium Multani Mitti — naturally sourced &amp; processed for your skin.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/skincare_with_multani?igsh=OW15eDdrZmpudDUx" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/919253412896" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:official.skincarewithmultani@gmail.com"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="#home">Home</a><a href="#about">About Us</a><a href="#products">Products</a>
+        <a href="#benefits">Benefits</a><a href="#gallery">Gallery</a><a href="#reviews">Reviews</a>
+        <a href="#faq">FAQ</a><a href="#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Policies</h4>
+        <a href="#policies" onclick="openPolicy('shipping')">Shipping Policy</a>
+        <a href="#policies" onclick="openPolicy('returns')">Return &amp; Refund</a>
+        <a href="#policies" onclick="openPolicy('privacy')">Privacy Policy</a>
+        <a href="#policies" onclick="openPolicy('terms')">Terms &amp; Conditions</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Us</h4>
+        <p><i class="fas fa-phone"></i> +91 92534 12896</p>
+        <p><i class="fab fa-whatsapp"></i> +91 92534 12896</p>
+        <p><i class="fas fa-envelope"></i> official.skincarewithmultani@gmail.com</p>
+        <p><i class="fas fa-location-dot"></i> New Delhi, India</p>
+        <p><i class="fas fa-clock"></i> Mon–Sat: 9AM – 10PM</p>
+      </div>
+      <div class="footer-col footer-news">
+        <h4>Newsletter</h4>
+        <p>Subscribe for offers &amp; updates.</p>
+        <div class="newsletter">
+          <input type="email" id="newsletterEmail" placeholder="Your email"/>
+          <button id="newsletterBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <span>© 2024 Skincare With Multani. All Rights Reserved.</span>
+      <span>Made with <i class="fas fa-heart"></i> in India</span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/919253412896?text=Hi!" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+<script src="js/main.js"></script>
+</body>
+</html>
