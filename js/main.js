@@ -207,7 +207,7 @@ function renderCart() {
   itemsEl.innerHTML = cart.map((item, idx) => `
     <div class="cart-item">
       <div class="cart-item-thumb">
-        <img src="${item.image || 'images/products/product-pouch.jpg'}" alt="${item.product_name}" onerror="this.src='images/products/product-pouch.jpg'"/>
+        <img src="${item.image || 'images/products/pouch-project(3).jpeg'}" alt="${item.product_name}" onerror="this.src='images/products/pouch-project(3).jpeg'"/>
       </div>
       <div class="cart-item-info">
         <strong>${item.product_name}</strong>
