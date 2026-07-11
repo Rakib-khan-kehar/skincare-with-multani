@@ -17,7 +17,7 @@ from backend.routes.user_routes        import user_bp
 from backend.routes.cart_routes        import cart_bp
 
 load_dotenv()
-app = Flask(__name__, static_folder="public", static_url_path="")
+app = Flask(__name__, static_folder="")
 CORS(app)
 connect_db()
 
