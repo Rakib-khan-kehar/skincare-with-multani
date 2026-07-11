@@ -1,5 +1,5 @@
 // main.js — Skincare With Multani — Complete JS
-const API = "http://127.0.0.1:5000/api";
+const API = "/api";
 const UPI_ID = "8396012896-2@ibl";
 
 // ── State ─────────────────────────────────────────────────────────
