@@ -207,7 +207,7 @@ function renderCart() {
   itemsEl.innerHTML = cart.map((item, idx) => `
     <div class="cart-item">
       <div class="cart-item-thumb">
-        <img src="${item.image || 'images/products/pouch-project(3).jpeg'}" alt="${item.product_name}" onerror="this.src='images/products/pouch-project(3).jpeg'"/>
+        <img src="${item.image || 'images/products/pouch-new photo.jpeg'}" alt="${item.product_name}" onerror="this.src='images/products/pouch-new photo.jpeg'"/>
       </div>
       <div class="cart-item-info">
         <strong>${item.product_name}</strong>
@@ -401,9 +401,9 @@ function setupProductTypeTabs() {
    PRODUCT WEIGHTS (Powder)
    ════════════════════════════════════════════════════════════════ */
 const WEIGHTS = [
-  { weight:"250g", price:99,  oldPrice:149, discount:34, img:"images/products/pouch-project(3).jpeg" },
-  { weight:"500g", price:179, oldPrice:null, discount:null, img:"images/products/pouch-project(3).jpeg" },
-  { weight:"1kg",  price:299, oldPrice:null, discount:null, img:"images/products/pouch-project(3).jpeg" },
+  { weight:"250g", price:99,  oldPrice:149, discount:34, img:"images/products/pouch-new photo.jpeg" },
+  { weight:"500g", price:179, oldPrice:null, discount:null, img:"images/products/pouch-new photo.jpeg" },
+  { weight:"1kg",  price:299, oldPrice:null, discount:null, img:"images/products/pouch-new photo.jpeg" },
 ];
 
 function setupProductWeights() {
